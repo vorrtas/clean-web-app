@@ -17,8 +17,8 @@ public class LoginEndpoint : Endpoint<LoginRequest, LoginResponse>
                     username = "admin",
                     password = "admin"
                 };
-                s.Responses[200] = "successfull login";
-                s.Responses[400] = "unsuccessfull login";
+                s.Response<LoginResponse>(200, "When valid login request is made");
+
             });
         });
 
