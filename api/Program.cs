@@ -2,8 +2,13 @@ global using FastEndpoints;
 global using FastEndpoints.Security;
 global using FastEndpoints.Swagger;
 
+using api.Infrastructure;
+
 var builder = WebApplication.CreateBuilder();
 
+IConfiguration configuration = builder.Configuration;
+
+builder.Services.ConfigureCors(configuration);
 builder.Services.AddFastEndpoints();
 
 builder.Services.AddAuthenticationJWTBearer(
@@ -17,7 +22,7 @@ builder.Services.AddCors(o => o.AddDefaultPolicy(p => p.AllowAnyHeader().AllowAn
 
 var app = builder.Build();
 
-app.UseCors();
+app.SetCors(configuration);
 app.UseAuthentication();
 app.UseAuthorization();
 app.UseStaticFiles();
