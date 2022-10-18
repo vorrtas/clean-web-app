@@ -11,7 +11,7 @@ builder.Services.AddAuthenticationJWTBearer(
     builder.Configuration.GetValue<string>("JWT:ISSUER"),
     builder.Configuration.GetValue<string>("JWT:AUDIENCE"));
 
-builder.Services.AddSwaggerDoc();
+builder.Services.AddSwaggerDoc(shortSchemaNames: true);
 
 builder.Services.AddCors(o => o.AddDefaultPolicy(p => p.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin()));
 
