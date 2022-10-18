@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { IdentityService } from '../../services/identity.service'
 import { Router } from '@angular/router';
+import { IdentityService } from 'src/app/auth/identity.service';
 
 @Component({
   selector: 'app-login',
@@ -16,7 +16,7 @@ export class LoginComponent implements OnInit {
   password = new FormControl('');
 
   Login() {
-    this.identity.authorize(this.username.value ?? '', this.password.value ?? '');
+    this.identity.login(this.username.value ?? '', this.password.value ?? '');
   }
 
   Navigate() {
