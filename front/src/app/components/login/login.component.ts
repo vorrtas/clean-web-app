@@ -23,6 +23,10 @@ export class LoginComponent implements OnInit {
     this.router.navigateByUrl('values');
   }
 
+  LogOut() {
+    this.identity.logout();
+  }
+
   ngOnInit(): void {
   }
 

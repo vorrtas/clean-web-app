@@ -1,5 +1,5 @@
 namespace api.Controllers.Values;
-public class GetValues : EndpointWithoutRequest<GetValuesResponse>
+public class GetValues : EndpointWithoutRequest<IEnumerable<int>>
 {
     public override void Configure()
     {
@@ -11,7 +11,7 @@ public class GetValues : EndpointWithoutRequest<GetValuesResponse>
     public override async Task HandleAsync(CancellationToken ct)
     {
         await Task.Delay(TimeSpan.FromSeconds(2));
-        var response = new GetValuesResponse() { Values = Enumerable.Range(0, 100).ToList() };
+        var response = Enumerable.Range(0, 100).ToList();
         await SendAsync(response);
     }
 }

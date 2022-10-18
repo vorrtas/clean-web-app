@@ -1,4 +1,4 @@
 <p>values works!</p>
 <ul *ngIf="numbers != null">
-  <li *ngFor="let num of numbers">{{num}}</li>
+  <li *ngFor="let num of numbers | async">{{num}}</li>
 </ul>

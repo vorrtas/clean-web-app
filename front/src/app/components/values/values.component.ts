@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Observable } from 'rxjs';
 import { ValuesService } from 'src/app/services/values.service';
 
 @Component({
@@ -10,10 +11,10 @@ export class ValuesComponent implements OnInit {
 
   constructor(private vservice: ValuesService) { }
 
-  numbers?: number[];
+  numbers!: Observable<number[]>;
 
   ngOnInit(): void {
-    this.vservice.GetNumbers().subscribe((v: any) => this.numbers = v.values);
+    this.numbers = this.vservice.GetNumbers();
   }
 
 }

@@ -8,7 +8,7 @@ export class ValuesService {
 
   constructor(private http: HttpClient) { }
 
-  public GetNumbers() {
-    return this.http.get(environment.apiurl + '/values');
+  public GetNumbers(): Observable<number[]> {
+    return this.http.get<number[]>(environment.apiurl + '/values');
   }
 }
