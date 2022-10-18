@@ -15,8 +15,5 @@ public class LoginRequestValidator : Validator<LoginRequest>
         .NotNull().WithMessage("Musisz podać hasło")
         .MinimumLength(3).WithMessage("Hasło musi mieć minimum 3 znaki")
         .MaximumLength(250).WithMessage("Hasło musi mieć maksimum 250 znaki")
-        .Matches(@"^[\S]{ 3,250}$").WithMessage("Hasło nie może zawierać znaków niedozwolonych");
-
-
     }
 }
