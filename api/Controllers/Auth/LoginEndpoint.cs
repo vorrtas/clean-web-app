@@ -5,6 +5,23 @@ public class LoginEndpoint : Endpoint<LoginRequest, LoginResponse>
     {
         Post("auth/login");
         AllowAnonymous();
+        Summary(s =>
+        {
+            s.Summary = "Pozwala się zalogować";
+            Summary(s =>
+            {
+                s.Summary = "short summary goes here";
+                s.Description = "long description goes here";
+                s.ExampleRequest = new LoginRequest
+                {
+                    username = "admin",
+                    password = "admin"
+                };
+                s.Responses[200] = "successfull login";
+                s.Responses[400] = "unsuccessfull login";
+            });
+        });
+
     }
 
     private LoginRequest? validlogin { get; set; } = new LoginRequest() { username = "admin", password = "admin" };
