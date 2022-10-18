@@ -1,10 +1,10 @@
-namespace api.Controllers;
+namespace api.Controllers.Values;
 public class GetValues : EndpointWithoutRequest<GetValuesResponse>
 {
     public override void Configure()
     {
         Get("values");
-        Roles("Admin");
+        Permissions("ManageInventory");
     }
 
 

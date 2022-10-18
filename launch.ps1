@@ -1,4 +1,5 @@
 cd front;
+npm i;
 ng build;
 cd ../api;
 cp ../front/dist/front/* ./wwwroot/ -r;

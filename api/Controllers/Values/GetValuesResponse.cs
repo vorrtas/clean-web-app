@@ -1,4 +1,4 @@
-namespace api.Controllers;
+namespace api.Controllers.Values;
 
 public record GetValuesResponse
 {

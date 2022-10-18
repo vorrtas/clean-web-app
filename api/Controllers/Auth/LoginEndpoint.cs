@@ -1,5 +1,5 @@
-namespace api.Controllers;
-public class UserLoginEndpoint : Endpoint<LoginRequest>
+namespace api.Controllers.Auth;
+public class LoginEndpoint : Endpoint<LoginRequest, LoginResponse>
 {
     public override void Configure()
     {
@@ -9,7 +9,7 @@ public class UserLoginEndpoint : Endpoint<LoginRequest>
 
     private LoginRequest? validlogin { get; set; } = new LoginRequest() { username = "admin", password = "admin" };
     private IConfiguration config;
-    public UserLoginEndpoint(IConfiguration config)
+    public LoginEndpoint(IConfiguration config)
     {
         this.config = config;
     }
@@ -18,17 +18,23 @@ public class UserLoginEndpoint : Endpoint<LoginRequest>
     {
         if (req == this.validlogin)
         {
+            var permissions = new[] { "ManageInventory", "ManageUsers" };
+
             var jwtToken = JWTBearer.CreateToken(
                 signingKey: this.config.GetValue<string>("JWT:KEY"),
+                issuer: this.config.GetValue<string>("JWT:ISSUER"),
+                audience: this.config.GetValue<string>("JWT:AUDIENCE"),
                 expireAt: DateTime.UtcNow.AddHours(8),
-                claims: new (string, string)[] { ("Username", req.username ?? ""), ("UserID", "001") },
-                roles: new[] { "Admin", "Management" },
-                permissions: new[] { "ManageInventory", "ManageUsers" });
+                claims: new[] { ("UserName", req.username!), ("Id", "1") },
+                roles: new[] { "User" },
+                permissions: permissions);
 
-            await SendAsync(new
+            await SendAsync(new LoginResponse()
             {
-                Username = req.username ?? "",
-                Token = jwtToken
+                Id = 1,
+                UserName = req.username,
+                Token = jwtToken,
+                Claims = permissions
             });
         }
         else
