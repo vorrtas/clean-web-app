@@ -1,6 +1,17 @@
 namespace api.Controllers.Auth;
 public class LoginEndpoint : Endpoint<LoginRequest, LoginResponse>
 {
+    private LoginRequest? validlogin { get; set; } = new LoginRequest() { username = "admin", password = "admin" };
+
+    private IConfiguration config;
+    private ILogger<LoginEndpoint> logger;
+
+    public LoginEndpoint(IConfiguration config, ILogger<LoginEndpoint> logger)
+    {
+        this.logger = logger;
+        this.config = config;
+    }
+
     public override void Configure()
     {
         Post("auth/login");
@@ -18,17 +29,10 @@ public class LoginEndpoint : Endpoint<LoginRequest, LoginResponse>
                     password = "admin"
                 };
                 s.Response<LoginResponse>(200, "When valid login request is made");
+                s.Response(400, "When invalid login request is made");
 
             });
         });
-
-    }
-
-    private LoginRequest? validlogin { get; set; } = new LoginRequest() { username = "admin", password = "admin" };
-    private IConfiguration config;
-    public LoginEndpoint(IConfiguration config)
-    {
-        this.config = config;
     }
 
     public override async Task HandleAsync(LoginRequest req, CancellationToken ct)
@@ -46,6 +50,8 @@ public class LoginEndpoint : Endpoint<LoginRequest, LoginResponse>
                 roles: new[] { "User" },
                 permissions: permissions);
 
+            logger.LogInformation("Valid login");
+
             await SendAsync(new LoginResponse()
             {
                 Id = 1,
@@ -56,6 +62,7 @@ public class LoginEndpoint : Endpoint<LoginRequest, LoginResponse>
         }
         else
         {
+            logger.LogCritical("INVALID LOGIN REQUEST");
             ThrowError("The supplied credentials are invalid!");
         }
     }

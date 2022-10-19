@@ -9,7 +9,7 @@ public static class Cors
             options.AddDefaultPolicy(policy =>
             {
                 policy.WithMethods("GET", "PUT", "POST", "DELETE");
-                policy.WithOrigins(configuration.GetValue<string>("HOST:ADDRESS"));
+                policy.WithOrigins(configuration.GetValue<string>("CORS:FRONTADDRESS"));
                 policy.AllowAnyHeader();
             });
         });
@@ -21,6 +21,7 @@ public static class Cors
     public static IApplicationBuilder SetCors(this IApplicationBuilder builder, IConfiguration configuration)
     {
         builder.UseCors();
+
         return builder;
     }
 
