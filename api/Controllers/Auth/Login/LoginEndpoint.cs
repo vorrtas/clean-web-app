@@ -1,4 +1,5 @@
 namespace api.Controllers.Auth;
+
 public class LoginEndpoint : Endpoint<LoginRequest, LoginResponse>
 {
     private LoginRequest? validlogin { get; set; } = new LoginRequest() { username = "admin", password = "admin" };
