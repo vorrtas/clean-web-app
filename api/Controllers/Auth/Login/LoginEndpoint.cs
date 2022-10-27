@@ -1,16 +1,18 @@
+using api.DataAcess;
+
 namespace api.Controllers.Auth;
 
 public class LoginEndpoint : Endpoint<LoginRequest, LoginResponse>
 {
-    private LoginRequest? validlogin { get; set; } = new LoginRequest() { username = "admin", password = "admin" };
+    private readonly IConfiguration config;
+    private readonly ILogger<LoginEndpoint> logger;
+    private readonly Context context;
 
-    private IConfiguration config;
-    private ILogger<LoginEndpoint> logger;
-
-    public LoginEndpoint(IConfiguration config, ILogger<LoginEndpoint> logger)
+    public LoginEndpoint(IConfiguration config, ILogger<LoginEndpoint> logger, Context context)
     {
         this.logger = logger;
         this.config = config;
+        this.context = context;
     }
 
     public override void Configure()
@@ -19,7 +21,6 @@ public class LoginEndpoint : Endpoint<LoginRequest, LoginResponse>
         AllowAnonymous();
         Summary(s =>
         {
-            s.Summary = "Pozwala się zalogować";
             Summary(s =>
             {
                 s.Summary = "short summary goes here";
@@ -38,33 +39,33 @@ public class LoginEndpoint : Endpoint<LoginRequest, LoginResponse>
 
     public override async Task HandleAsync(LoginRequest req, CancellationToken ct)
     {
-        if (req == this.validlogin)
+        await context.Users.AddAsync(new DataAcess.Entities.User() { Username = "Łukasz", Login = "xd", Password = "xd" });
+        await context.SaveChangesAsync();
+        DataAcess.Entities.User? usr = await context.Users.FindAsync(1);
+        logger.LogCritical(usr?.Login);
+
+
+        var permissions = new[] { "ManageInventory", "ManageUsers" };
+
+        var jwtToken = JWTBearer.CreateToken(
+            signingKey: this.config.GetValue<string>("JWT:KEY"),
+            issuer: this.config.GetValue<string>("JWT:ISSUER"),
+            audience: this.config.GetValue<string>("JWT:AUDIENCE"),
+            expireAt: DateTime.UtcNow.AddHours(8),
+            claims: new[] { ("UserName", req.username!), ("Id", "1") },
+            roles: new[] { "User" },
+            permissions: permissions);
+
+        logger.LogInformation("Valid login");
+
+        await SendAsync(new LoginResponse()
         {
-            var permissions = new[] { "ManageInventory", "ManageUsers" };
-
-            var jwtToken = JWTBearer.CreateToken(
-                signingKey: this.config.GetValue<string>("JWT:KEY"),
-                issuer: this.config.GetValue<string>("JWT:ISSUER"),
-                audience: this.config.GetValue<string>("JWT:AUDIENCE"),
-                expireAt: DateTime.UtcNow.AddHours(8),
-                claims: new[] { ("UserName", req.username!), ("Id", "1") },
-                roles: new[] { "User" },
-                permissions: permissions);
-
-            logger.LogInformation("Valid login");
-
-            await SendAsync(new LoginResponse()
-            {
-                Id = 1,
-                UserName = req.username,
-                Token = jwtToken,
-                Claims = permissions
-            });
-        }
-        else
-        {
-            logger.LogCritical("INVALID LOGIN REQUEST");
-            ThrowError("The supplied credentials are invalid!");
-        }
+            Id = 1,
+            UserName = req.username,
+            Token = jwtToken,
+            Claims = permissions
+        });
     }
+
+
 }

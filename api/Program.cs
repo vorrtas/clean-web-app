@@ -9,8 +9,10 @@ var builder = WebApplication.CreateBuilder();
 IConfiguration configuration = builder.Configuration;
 
 builder.Logging.ConfigureLogger(configuration);
+builder.Services.ConfigureForwarderdHeaders(configuration);
 builder.Services.ConfigureCors(configuration);
 builder.Services.ConfigureAuth(configuration);
+builder.Services.ConfigureDatabase(configuration);
 builder.Services.ConfigureEndpoints(configuration);
 builder.Services.ConfigureSwagger(configuration);
 
