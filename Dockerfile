@@ -10,11 +10,11 @@ WORKDIR /app
 COPY ./api/*.csproj ./
 RUN dotnet restore
 COPY ./api/ /
-RUN dotnet publish -c Release
+RUN dotnet publish -c Release -o build
 
 FROM mcr.microsoft.com/dotnet/aspnet AS final
 WORKDIR /app
-COPY --from=dotnet-sdk /app/out .
-COPY --from=build-env /app/out .
-COPY --from=build-env /app/out .
-ENTRYPOINT ["dotnet", "aspnetapp.dll"]
+COPY --from=dotnet-sdk /app/build .
+COPY --from=node-sdk /app/dist/front ./wwwroot
+#VOLUME 
+ENTRYPOINT ["dotnet", "api.dll"]

@@ -39,9 +39,9 @@ public class LoginEndpoint : Endpoint<LoginRequest, LoginResponse>
 
     public override async Task HandleAsync(LoginRequest req, CancellationToken ct)
     {
-        await context.Users.AddAsync(new DataAcess.Entities.User() { Username = "Łukasz", Login = "xd", Password = "xd" });
+        await context.Users.AddAsync(new User() { Username = "Łukasz", Login = "xd", PasswordHash = "xd" });
         await context.SaveChangesAsync();
-        DataAcess.Entities.User? usr = await context.Users.FindAsync(1);
+        User? usr = await context.Users.FindAsync(1);
         logger.LogCritical(usr?.Login);
 
 

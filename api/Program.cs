@@ -1,7 +1,6 @@
 global using FastEndpoints;
 global using FastEndpoints.Security;
 global using FastEndpoints.Swagger;
-
 using api.Infrastructure;
 
 var builder = WebApplication.CreateBuilder();
@@ -23,5 +22,8 @@ app.SetAuth(configuration);
 app.SetEndpoints(configuration);
 app.SetFrontend(configuration);
 app.SetSwagger(configuration);
+
+var ctx = app.Services.GetRequiredService<api.DataAcess.Context>();
+await ctx.Database.EnsureCreatedAsync();
 
 app.Run();

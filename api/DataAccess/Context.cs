@@ -1,4 +1,3 @@
-using api.DataAcess.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace api.DataAcess;
@@ -13,11 +12,13 @@ public class Context : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<User>().HasKey(u => u.Id);
+        modelBuilder.Entity<User>().HasIndex(u => u.Login);
 
+        modelBuilder.Entity<Permission>().HasKey(p => p.Id);
 
-        //.HasData(new User() { Id = 1, Username = "Administrator", Login = "admin", Password = "admin" });
-
+        modelBuilder.Entity<User>().HasMany<Permission>(u => u.Permissions).WithMany(p => p.Users);
     }
 
-    public DbSet<User> Users { get; set; }
+    public DbSet<User> Users => Set<User>();
+    public DbSet<Permission> Permissions => Set<Permission>();
 }
